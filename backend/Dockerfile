@@ -2,6 +2,14 @@
 # который содержит файлы ОС и интерпретатор Python 3.12.
 FROM python:3.12
 
+# Установка системных зависимостей
+#RUN apt-get update && apt-get install -y \
+#    && rm -rf /var/lib/apt/lists/*
+
+# Установка Python зависимостей
+RUN pip install --upgrade pip
+RUN pip install setuptools
+
 # Переходим в образе в директорию /app: в ней будем хранить код проекта.
 # Если директории с указанным именем нет, она будет создана.
 # Название директории может быть любым.
@@ -10,6 +18,7 @@ WORKDIR /app
 
 # Скопировать с локального компьютера файл зависимостей
 # в текущую директорию (текущая директория — это /app).
+RUN pip install gunicorn==23.0.0
 COPY requirements.txt .
 
 # Выполнить в текущей директории команду терминала
@@ -22,4 +31,5 @@ RUN pip install -r requirements.txt --no-cache-dir
 COPY . .
 
 # При старте контейнера запустить сервер разработки.
-CMD ["python", "manage.py", "runserver", "0:8000"]
+# CMD ["python", "manage.py", "runserver", "0:8000"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "backend.wsgi"] 
