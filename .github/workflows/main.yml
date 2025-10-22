@@ -74,6 +74,20 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           # Хорошо ли держать логин и пароль прямо в коде workflow?
           # Нет, это нехорошо
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION=${VERSION}"
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: wallery/taski_gateway
+          tags: |
+            type=raw,value=${{ steps.version.outputs.VERSION }}
+            type=raw,value=latest
       - name: Push to DockerHub backend
         # Одновременный билд и пуш образа в Docker Hub
         uses: docker/build-push-action@v4
@@ -88,7 +102,8 @@ jobs:
           # Для каждого пересобранного образа 
           # устанавливаем тег latest, чтобы потом
           # на сервере и в docker-compose.yml не указывать версию
-          tags: wallery/taski_backend:latest 
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   frontend_tests:
     runs-on: ubuntu-latest
@@ -128,12 +143,27 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Extract version
+        id: version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/}
+          echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
+          echo "VERSION=${VERSION}"
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: wallery/taski_gateway
+          tags: |
+            type=raw,value=${{ steps.version.outputs.VERSION }}
+            type=raw,value=latest
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
         with:
           context: ./frontend/
           push: true
-          tags: wallery/taski_frontend:latest
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
   build_gateway_and_push_to_docker_hub:
     name: Push gateway Docker image to DockerHub
