@@ -82,7 +82,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: wallery/taski_gateway
+          images: wallery/taski_backend
           tags: |
             type=raw,value=${{ steps.version.outputs.VERSION }}
             type=raw,value=latest
@@ -151,7 +151,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: wallery/taski_gateway
+          images: wallery/taski_frontend
           tags: |
             type=raw,value=${{ steps.version.outputs.VERSION }}
             type=raw,value=latest
