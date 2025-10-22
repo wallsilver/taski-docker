@@ -52,7 +52,6 @@ jobs:
         cd backend/
         python manage.py test
 
-jobs:
   build_and_push_to_docker_hub:
     runs-on: ubuntu-latest
     needs: tests  # Не выполнять сразу, ждать, пока выполнится tests
@@ -87,3 +86,33 @@ jobs:
           # устанавливаем тег latest, чтобы потом
           # на сервере и в docker-compose.yml не указывать версию
           tags: wallery/taski_backend:latest 
+      - name: Push to DockerHub frontend
+        # Одновременный билд и пуш образа в Docker Hub
+        uses: docker/build-push-action@v4
+        with:
+          # Параметр context: ./frontend/ указывает, что нужный Dockerfile
+          # находится в ./frontend/
+          context: ./frontend/
+          # Параметр push: true указывает, что образ нужно не только собрать,
+          # но и отправить на Docker Hub
+          push: true
+          # В параметре tags задаётся название и тег для образа.
+          # Для каждого пересобранного образа
+          # устанавливаем тег latest, чтобы потом
+          # на сервере и в docker-compose.yml не указывать версию
+          tags: wallery/taski_frontend:latest
+      - name: Push to DockerHub gateway
+        # Одновременный билд и пуш образа в Docker Hub
+        uses: docker/build-push-action@v4
+        with:
+          # Параметр context: ./gateway/ указывает, что нужный Dockerfile
+          # находится в ./gateway/
+          context: ./gateway/
+          # Параметр push: true указывает, что образ нужно не только собрать,
+          # но и отправить на Docker Hub
+          push: true
+          # В параметре tags задаётся название и тег для образа.
+          # Для каждого пересобранного образа
+          # устанавливаем тег latest, чтобы потом
+          # на сервере и в docker-compose.yml не указывать версию
+          tags: wallery/taski_gateway:latest
