@@ -24,7 +24,7 @@ services:
   backend:
     container_name: taski-backend
     # Из какого Dockerfile собирать образ для этого контейнера:
-    image: wallery/taski_backend:1.10.1
+    build: ./backend/
     env_file: .env
     # Какие контейнеры нужно запустить до старта этого контейнера:
     depends_on:
@@ -36,7 +36,7 @@ services:
   frontend:
     container_name: taski-frontend
     env_file: .env
-    image: wallery/taski_frontend:1.10.1
+    build: ./frontend/
     volumes:
       - static:/frontend_static
     command:
@@ -46,7 +46,7 @@ services:
     container_name: taski-gateway
     # Сбилдить и запустить образ, 
     # описанный в Dockerfile в папке gateway
-    image: wallery/taski_gateway:1.10.1
+    build: ./gateway/
     # Ключ ports устанавливает
     # перенаправление всех запросов с порта 8000 хоста
     # на порт 80 контейнера
