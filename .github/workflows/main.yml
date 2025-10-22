@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  tests backend:
+  tests_backend:
     runs-on: ubuntu-latest
     # Блок services аналогичен docker-compose.yml
     services:
