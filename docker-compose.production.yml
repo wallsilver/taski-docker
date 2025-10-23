@@ -2,8 +2,8 @@
 
 # Перечень volume
 volumes:
-  pg_data:
-  static:
+  taski_pg_data:
+  taski_static:
 
 # Перечень контейнеров
 services:
@@ -18,7 +18,7 @@ services:
     env_file: .env
     # Какой volume подключить для этого контейнера
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - taski_pg_data:/var/lib/postgresql/data
 
   # Имя и описание контейнера с бэкендом
   backend:
@@ -30,15 +30,14 @@ services:
     depends_on:
       - db
     volumes:
-      - static:/backend_static
+      - taski_static:/backend_static
 
   # Имя третьего контейнера. Это контейнер с фронтендом
   frontend:
     container_name: taski-frontend
-    env_file: .env
     image: wallery/taski_frontend:latest
     volumes:
-      - static:/frontend_static
+      - taski_static:/frontend_static
     command:
       cp -r /app/build/. /frontend_static/
 
@@ -52,8 +51,9 @@ services:
     # на порт 80 контейнера
     depends_on:
       - backend
+      - frontend
     volumes:
-      - static:/staticfiles
+      - taski_static:/staticfiles
     ports:
       - 8000:80
 
