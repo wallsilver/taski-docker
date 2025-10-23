@@ -84,7 +84,7 @@ jobs:
         with:
           images: wallery/taski_backend
           tags: |
-            type=raw,value=${{ steps.version.outputs.VERSION }}
+            ${{ startsWith(github.ref, 'refs/tags/') && format('type=raw,value={0}', steps.version.outputs.VERSION) || '' }}
             type=raw,value=latest
       - name: Push to DockerHub backend
         # Одновременный билд и пуш образа в Docker Hub
@@ -153,7 +153,7 @@ jobs:
         with:
           images: wallery/taski_frontend
           tags: |
-            type=raw,value=${{ steps.version.outputs.VERSION }}
+            ${{ startsWith(github.ref, 'refs/tags/') && format('type=raw,value={0}', steps.version.outputs.VERSION) || '' }}
             type=raw,value=latest
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
@@ -188,7 +188,7 @@ jobs:
         with:
           images: wallery/taski_gateway
           tags: |
-            type=raw,value=${{ steps.version.outputs.VERSION }}
+            ${{ startsWith(github.ref, 'refs/tags/') && format('type=raw,value={0}', steps.version.outputs.VERSION) || '' }}
             type=raw,value=latest
       - name: Push to DockerHub
         uses: docker/build-push-action@v4
